@@ -1,3 +1,5 @@
+// noinspection UnnecessaryLocalVariableJS
+
 import nodemailer from "nodemailer";
 
 export const emailAdapter = {
@@ -19,9 +21,6 @@ export const emailAdapter = {
             html: message
 
         });
-        console.log("**********************************************");
-        console.log(info);
-        console.log("**********************************************");
         return info
     },
 };

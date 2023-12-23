@@ -11,7 +11,8 @@ import {UserRepository} from "../repositories/repositury/user-repository";
 import {EmailsManager} from "../managers/email-manager";
 
 export const authService = {
-    async createUser(userData: UserCreateModel) {
+    async createUser(userData: UserCreateModel): Promise<boolean> {
+        console.log('Сработала сучка:(');
         const passwordHash = await bcrypt.hash(userData.password, 12);
         const newUser: UserDBType = {
             _id: new ObjectId(),
