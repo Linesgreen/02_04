@@ -309,6 +309,13 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
+"@elasticemail/elasticemail-client-ts-axios@^4.0.22":
+  version "4.0.22"
+  resolved "https://registry.yarnpkg.com/@elasticemail/elasticemail-client-ts-axios/-/elasticemail-client-ts-axios-4.0.22.tgz#80b71f9935571552d9c53ca6beaaf29f0c23efcf"
+  integrity sha512-JscAH9k7+R78gW1QGzuqTgjLkcynzqSWDZv7FeMKPhI9DDEe53hBw90949SHpm6vQatUerZJfpV4XMDI5I5Utw==
+  dependencies:
+    axios "^0.21.4"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -1042,6 +1049,13 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
+
+axios@^0.21.4:
+  version "0.21.4"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
+  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
+  dependencies:
+    follow-redirects "^1.14.0"
 
 babel-jest@^29.7.0:
   version "29.7.0"
@@ -1829,6 +1843,11 @@ findup-sync@^5.0.0:
     is-glob "^4.0.3"
     micromatch "^4.0.4"
     resolve-dir "^1.0.1"
+
+follow-redirects@^1.14.0:
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.3.tgz#fe2f3ef2690afce7e82ed0b44db08165b207123a"
+  integrity sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==
 
 form-data@^4.0.0:
   version "4.0.0"
