@@ -18,7 +18,7 @@ export class EmailsManager {
     `;
         const result = await emailAdapter.sendEmail(email, subject, message);
 
-        return true
+        return result
     }
 
 }

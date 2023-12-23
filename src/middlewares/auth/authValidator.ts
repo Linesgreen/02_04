@@ -44,12 +44,14 @@ export const confirmCodeValidation = body('code')
     .custom(async code => {
         const userWithCode = await UserQueryRepository.getUserByRegCode(code);
         if (!userWithCode) {
-            throw new Error('Code not Valid');
+            throw new Error('Code not Valid (no user)');
         }
         if (!(userWithCode.emailConfirmation.expirationDate > new Date())) {
-            throw new Error('Code not Valid');
+            console.log('по дате');
+            throw new Error('Code not Valid date problem');
         }
         if (userWithCode.emailConfirmation.isConfirmed) {
+            console.log('не проходит по булиану');
             throw new Error('Code already Activated');
         }
         return true
