@@ -9,7 +9,7 @@ import {authLoginValidation} from "../middlewares/auth/auth-middleware";
 import {UserDBType, UserOutputType} from "../types/users/output";
 import {WithId} from "mongodb";
 import {jwtService} from "../application/jwt-service";
-import {authBearerMiddleware} from "../middlewares/auth/auth-bearer-niddleware";
+import {authBearerMiddleware, authRefreshBearerMiddleware} from "../middlewares/auth/auth-bearer-niddleware";
 import {UserQueryRepository} from "../repositories/query repository/user-query-repository";
 import {AboutMe} from "../types/auth/output";
 
@@ -30,7 +30,9 @@ authRoute.post('/login', authLoginValidation(), async (req: RequestWithBody<Chek
     const {loginOrEmail, password}: ChekPass = req.body;
     const user: WithId<UserDBType> | null = await UserService.checkCredentials(loginOrEmail, password);
     if (user) {
-        const token = await jwtService.createJWT(user);
+        const token = await jwtService.createJWT(user._id);
+        const refreshToken = await jwtService.createRefreshJWT(user._id);
+        res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true,})
         res.status(200).send({
             accessToken: token
         });
@@ -73,6 +75,16 @@ authRoute.post('/registration-email-resending', authResendConfCode(), async (req
         res.sendStatus(400)
     }
     res.sendStatus(204)
+});
+
+authRoute.post('/logout', authRefreshBearerMiddleware, async (req: Request, res: Response) => {
+    const refrToken: string = req.cookies.refresh_token
+    const result: boolean = await authService.refreshTokenToBanList(refrToken);
+    if(result) {
+        res.sendStatus(204)
+    } else {
+        res.sendStatus(999)
+    }
 });
 
 

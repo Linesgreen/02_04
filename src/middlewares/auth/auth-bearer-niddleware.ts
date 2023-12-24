@@ -1,8 +1,9 @@
 import {NextFunction, Request, Response} from "express";
-import {jwtService} from "../../application/jwt-service";
+import {jwtService, secretRefreshWord} from "../../application/jwt-service";
 import {UserQueryRepository} from "../../repositories/query repository/user-query-repository";
 import {ObjectId} from "mongodb";
 import {UserOutputType} from "../../types/users/output";
+import jwt from "jsonwebtoken";
 
 export const authBearerMiddleware = async (req: Request, res: Response, next: NextFunction)=> {
     const auth: string | undefined = req.headers['authorization'];
@@ -28,5 +29,18 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
         return next()
     } else {
         return res.sendStatus(404)
+    }
+};
+
+export const authRefreshBearerMiddleware = async (req: Request, res: Response, next: NextFunction)=> {
+    const refreshToken: string = req.cookies.refresh_token;
+    try {
+        jwt.verify(refreshToken, secretRefreshWord);
+        next()
+    } catch (error) {
+        console.log('===========================================')
+        console.log(error)
+        console.log('===========================================')
+        res.sendStatus(401)
     }
 };

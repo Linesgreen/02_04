@@ -1,5 +1,5 @@
 import {UserDBType} from "../../types/users/output";
-import {userCollection} from "../../db/db";
+import {tokenCollection, userCollection} from "../../db/db";
 import {ObjectId} from "mongodb";
 
 // noinspection UnnecessaryLocalVariableJS
@@ -62,4 +62,14 @@ export class UserRepository {
         const deleteResult = await userCollection.deleteOne({_id: new ObjectId(id)});
         return !!deleteResult.deletedCount
     }
+    /**
+     * Add refresh token in ban list
+     * @param token token need to punish
+     * @return boolean
+     */
+    static async addTokenInBlackList(token: string): Promise<boolean> {
+        await tokenCollection.insertOne({token})
+        return true
+    }
+
 }

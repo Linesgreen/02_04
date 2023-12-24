@@ -59,5 +59,9 @@ export const authService = {
             console.log(e);
             return false
         }
+    },
+    async refreshTokenToBanList(token: string): Promise<boolean> {
+        const result = await UserRepository.addTokenInBlackList(token)
+        return result
     }
 };
