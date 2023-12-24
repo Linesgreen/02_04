@@ -9,7 +9,7 @@ import {commentRoute} from "./routes/comment-routes";
 import morganBody from 'morgan-body';
 import bodyParser from 'body-parser';
 import {emailRouter} from "./routes/email-router";
-
+import cookieParser from 'cookie-parser';
 export const app = express();
 
 
@@ -25,10 +25,8 @@ export const RouterPaths = {
 
 
 morganBody(app);
-
-
 app.use(bodyParser.json());
-
+app.use(cookieParser())
 app.use(RouterPaths.posts, postRoute);
 app.use(RouterPaths.blogs, blogRoute);
 app.use(RouterPaths.__test__, deleteTestRoute);
