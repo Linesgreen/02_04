@@ -5,9 +5,11 @@ import {PostType} from "../types/posts/output";
 import {UserDBType} from "../types/users/output";
 
 import {CommentType} from "../types/comment/output";
-import {BlacTokenType} from "../types/auth/token";
+import {expiredTokenDBType} from "../types/auth/token";
 
-const mongoUri: string = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017';
+
+const mongoUri: string = process.env.MONGO_URL ||'mongodb://0.0.0.0:27017';
+
 
 
 const client = new MongoClient(mongoUri);
@@ -16,7 +18,7 @@ const db = client.db();
 export const blogCollection: Collection<BlogType> = db.collection<BlogType>('blog');
 export const postCollection: Collection<PostType> = db.collection<PostType>('post');
 export const userCollection: Collection<UserDBType> = db.collection<UserDBType>('user');
-export const tokenCollection: Collection<BlacTokenType> = db.collection<BlacTokenType>('tokens');
+export const tokenCollection: Collection<expiredTokenDBType> = db.collection<expiredTokenDBType>('tokens');
 
 export const commentCollection: Collection<CommentType> = db.collection<CommentType>('comment');
 

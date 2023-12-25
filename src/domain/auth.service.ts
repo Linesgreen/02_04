@@ -9,6 +9,7 @@ import {ObjectId} from "mongodb";
 import {UserRepository} from "../repositories/repositury/user-repository";
 
 import {EmailsManager} from "../managers/email-manager";
+import {expiredTokenDBType} from "../types/auth/token";
 
 export const authService = {
     async createUser(userData: UserCreateModel): Promise<boolean> {
@@ -61,7 +62,13 @@ export const authService = {
         }
     },
     async refreshTokenToBanList(token: string): Promise<boolean> {
-        const result = await UserRepository.addTokenInBlackList(token)
+        const expiredToken: expiredTokenDBType = {
+            _id: new ObjectId(),
+            token: token,
+            dateAdded: new Date(),
+            reason: 'Logout'
+        }
+        const result = await UserRepository.addTokenInBlackList(expiredToken)
         return result
     }
 };

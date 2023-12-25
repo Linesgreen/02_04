@@ -1,6 +1,7 @@
 import {UserDBType} from "../../types/users/output";
 import {tokenCollection, userCollection} from "../../db/db";
 import {ObjectId} from "mongodb";
+import {expiredTokenDBType} from "../../types/auth/token";
 
 // noinspection UnnecessaryLocalVariableJS
 export class UserRepository {
@@ -67,9 +68,18 @@ export class UserRepository {
      * @param token token need to punish
      * @return boolean
      */
-    static async addTokenInBlackList(token: string): Promise<boolean> {
-        await tokenCollection.insertOne({token})
+    static async addTokenInBlackList(token: expiredTokenDBType): Promise<boolean> {
+        await tokenCollection.insertOne(token)
         return true
+    }
+    /**
+     * Add refresh token in ban list
+     * @param token token need to punish
+     * @return boolean
+     */
+    static async shearchTokenInBlackList(token: string): Promise<boolean> {
+        const result = await tokenCollection.findOne({token: token})
+      return !!result
     }
 
 }

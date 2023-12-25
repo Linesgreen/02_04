@@ -25,6 +25,8 @@ export const RouterPaths = {
 
 
 morganBody(app);
+
+
 app.use(bodyParser.json());
 app.use(cookieParser())
 app.use(RouterPaths.posts, postRoute);

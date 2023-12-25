@@ -5,8 +5,8 @@ import {ObjectId} from "mongodb";
 
 require('dotenv').config();
 
-const secretWord: string = process.env.JWT_SECRET || 'BLABLABLA';
-export const secretRefreshWord: string = process.env.JWT_REFRESH_SECRET || 'bbbbb';
+export const secretWord: string = process.env.JWT_SECRET || 'BLABLABLA';
+
 export const jwtService = {
     /**
      * Create JWT auth token
@@ -14,7 +14,7 @@ export const jwtService = {
      * @returns token - token
      */
     async createJWT(userId: ObjectId): Promise<string> {
-        const token: string = jwt.sign({userId: userId}, secretWord, {expiresIn: '1h'});
+        const token: string = jwt.sign({userId: userId}, secretWord, {expiresIn: '10s'});
         return token;
     },
     /**
@@ -23,7 +23,7 @@ export const jwtService = {
      * @returns token - refresh token
      */
     async createRefreshJWT(userId: ObjectId):Promise<string> {
-        const token: string = jwt.sign({userId: userId}, secretRefreshWord, {expiresIn: '2h'});
+        const token: string = jwt.sign({userId: userId}, secretWord, {expiresIn: '20s'});
         return token;
     },
     /**
@@ -37,6 +37,7 @@ export const jwtService = {
             const result: any = jwt.verify(token, secretWord);
             return result.userId
         } catch (error) {
+            console.log(error)
             return null
         }
     },

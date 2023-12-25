@@ -7,7 +7,7 @@ import {ChekPass, ConfCode} from "../types/auth/input";
 import {UserService} from "../domain/user.service";
 import {authLoginValidation} from "../middlewares/auth/auth-middleware";
 import {UserDBType, UserOutputType} from "../types/users/output";
-import {WithId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {jwtService} from "../application/jwt-service";
 import {authBearerMiddleware, authRefreshBearerMiddleware} from "../middlewares/auth/auth-bearer-niddleware";
 import {UserQueryRepository} from "../repositories/query repository/user-query-repository";
@@ -32,7 +32,8 @@ authRoute.post('/login', authLoginValidation(), async (req: RequestWithBody<Chek
     if (user) {
         const token = await jwtService.createJWT(user._id);
         const refreshToken = await jwtService.createRefreshJWT(user._id);
-        res.cookie('refresh_token', refreshToken, {httpOnly: true, secure: true,})
+        res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
+        console.log(res.cookie)
         res.status(200).send({
             accessToken: token
         });
@@ -78,14 +79,30 @@ authRoute.post('/registration-email-resending', authResendConfCode(), async (req
 });
 
 authRoute.post('/logout', authRefreshBearerMiddleware, async (req: Request, res: Response) => {
-    const refrToken: string = req.cookies.refresh_token
+    const refrToken: string = req.cookies.refreshToken
     const result: boolean = await authService.refreshTokenToBanList(refrToken);
     if(result) {
         res.sendStatus(204)
     } else {
         res.sendStatus(999)
     }
+
 });
+authRoute.post('/refresh-token', authRefreshBearerMiddleware, async (req: Request, res: Response) => {
+    const userId = new ObjectId(req.user!.id)
+    const refrToken: string = req.cookies.refreshToken
+
+    await authService.refreshTokenToBanList(refrToken);
+
+    const newToken = await jwtService.createJWT(userId);
+    const newRefreshToken = await jwtService.createRefreshJWT(userId);
+
+    res.cookie('refreshToken', newRefreshToken, {httpOnly: true, secure: true,})
+    console.log(res.cookie)
+    res.status(200).send({
+        accessToken: newToken
+    });
+})
 
 
 
