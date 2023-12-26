@@ -18,10 +18,10 @@ export class ConstructorFilter {
         // findOne({$or: [{email: logOrEmail}, {login: logOrEmail}]}
         let filter: FilterType = {$or: []};
         if (email) {
-            filter['$or']?.push({email: {$regex: email, $options: 'i'}});
+            filter['$or']?.push({'accountData.email': {$regex: email, $options: 'i'}});
         }
         if (login) {
-            filter['$or']?.push({login: {$regex: login, $options: 'i'}});
+            filter['$or']?.push({'accountData.login': {$regex: login, $options: 'i'}});
         }
         if (filter['$or']?.length === 0) {
             filter['$or']?.push({});
@@ -33,11 +33,11 @@ export class ConstructorFilter {
     static filter_Sort(sortBy: string, sortDirection: string | undefined): SortType {
         if (sortDirection === 'asc') {
             return {
-                [sortBy]: 1
+                [`accountData.${sortBy}`]: 1
             }
         }
         return {
-            [sortBy]: -1
+            [`accountData.${sortBy}`]: -1
         }
     }
 
