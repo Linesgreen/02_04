@@ -40,6 +40,16 @@ export class ConstructorFilter {
             [`accountData.${sortBy}`]: -1
         }
     }
+    static filter_Sort_forBlogs(sortBy: string, sortDirection: string | undefined): SortType {
+        if (sortDirection === 'asc') {
+            return {
+                [sortBy]: 1
+            }
+        }
+        return {
+            [sortBy]: -1
+        }
+    }
 
     static filter_Skip(pageNumber: string, pageSize: string): number {
         const skip: number = (+pageNumber - 1) * +pageSize;

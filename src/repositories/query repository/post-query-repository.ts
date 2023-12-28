@@ -21,7 +21,7 @@ export class PostQueryRepository {
             pageNumber: sortData.pageNumber || '1',
             pageSize: sortData.pageSize || '10'
         };
-        const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
+        const sortFilter: SortType = ConstructorFilter.filter_Sort_forBlogs(formattedSortData.sortBy, formattedSortData.sortDirection);
         const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
         const posts: WithId<PostType>[] = await postCollection
             .find({})
@@ -74,7 +74,7 @@ export class PostQueryRepository {
             pageSize: sortData.pageSize || '10'
         };
 
-        const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
+        const sortFilter: SortType = ConstructorFilter.filter_Sort_forBlogs(formattedSortData.sortBy, formattedSortData.sortDirection);
         const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
         const posts: WithId<PostType>[] = await postCollection
             .find({blogId: id})
