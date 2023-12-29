@@ -25,7 +25,7 @@ export class BlogQueryRepository {
         };
 
         const findFilter: FilterType = ConstructorFilter.filter_Find_NameTerm(formattedSortData.searchNameTerm);
-        const sortFilter: SortType = ConstructorFilter.filter_Sort_forBlogs(formattedSortData.sortBy, formattedSortData.sortDirection);
+        const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
         const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
 
         const blogs: WithId<BlogType>[] = await blogCollection

@@ -40,7 +40,6 @@ blogRoute.get('/', async (req: RequestWithQuery<BlogSortData>, res: Response<Out
         pageNumber: req.query.pageNumber,
         pageSize: req.query.pageSize
     };
-
     const blogs: OutputBlogType = await BlogQueryRepository.getAllBlogs(sortData);
     res.send(blogs)
 });
@@ -54,14 +53,10 @@ blogRoute.get('/:id/posts', blogIdInParamsMiddleware, mongoIdAndErrorResult(), a
         pageNumber: req.query.pageNumber,
         pageSize: req.query.pageSize
     };
-
     const posts: OutputPostType | null = await PostQueryRepository.getAllPostsInBlog(blogId, sortData);
-    if (!posts) {
-        res.sendStatus(404);
-        return
-    }
-    res.status(200).send(posts)
+    return posts? res.status(200).send(posts) :  res.sendStatus(404);
 });
+
 
 
 blogRoute.get('/:id', mongoIdAndErrorResult(), blogIdInParamsMiddleware, async (req: RequestWithParams<BlogParams>, res: Response<OutputItemsBlogType>) => {
@@ -70,10 +65,9 @@ blogRoute.get('/:id', mongoIdAndErrorResult(), blogIdInParamsMiddleware, async (
     blog ? res.send(blog) : res.sendStatus(404)
 });
 
-blogRoute.post('/', authMiddleware, blogPostValidation(), async (req: RequestWithBody<BlogCreateModel>, res: Response<OutputItemsBlogType | null>) => {
+blogRoute.post('/', authMiddleware, blogPostValidation(), async (req: RequestWithBody<BlogCreateModel>, res: Response<OutputItemsBlogType>) => {
     let {name, description, websiteUrl}: PostBlogReqBody = req.body;
-    const newBlogId: string = await BlogService.addBlog({name, description, websiteUrl});
-    const newBlog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(newBlogId);
+    const newBlog: OutputItemsBlogType = await BlogService.addBlog({name, description, websiteUrl});
     res.status(201).send(newBlog);
 });
 
@@ -81,12 +75,8 @@ blogRoute.post('/', authMiddleware, blogPostValidation(), async (req: RequestWit
 blogRoute.post('/:id/posts', authMiddleware, postInBlogValidation(), async (req: RequestWithBodyAndParams<BlogParams, PostToBlogCreateModel>, res: Response<OutputItemsPostType | null>) => {
     const id: string = req.params.id;
     let {title, shortDescription, content}: PostToBlogCreateModel = req.body;
-    const newPostId: string | null = await BlogService.addPostToBlog(id, {title, shortDescription, content});
-    if (!newPostId) {
-        res.sendStatus(404);
-        return
-    }
-    res.status(201).send(await PostQueryRepository.getPostById(newPostId));
+    const newPost: OutputItemsPostType | null = await BlogService.addPostToBlog(id, {title, shortDescription, content});
+    return newPost ?  res.status(201).send(newPost) : res.sendStatus(404)
 });
 
 

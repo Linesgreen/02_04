@@ -26,7 +26,7 @@ export class UserQueryRepository {
         };
 
         const findFilter: FilterType = ConstructorFilter.filter_Find_EmailORLoginTerm(formattedSortData.searchEmailTerm, formattedSortData.searchLoginTerm);
-        const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
+        const sortFilter: SortType = ConstructorFilter.filter_Sort_for_Users(formattedSortData.sortBy, formattedSortData.sortDirection);
         const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
 
         const usersFromDB: UserDBType[] = await userCollection

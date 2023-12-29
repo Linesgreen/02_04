@@ -53,7 +53,7 @@ export class CommentQueryRepository {
         };
 
         const findFilter = {postId: postId};
-        const sortFilter: SortType = ConstructorFilter.filter_Sort_forBlogs(formattedSortData.sortBy, formattedSortData.sortDirection);
+        const sortFilter: SortType = ConstructorFilter.filter_Sort(formattedSortData.sortBy, formattedSortData.sortDirection);
         const skipFilter: number = ConstructorFilter.filter_Skip(formattedSortData.pageNumber, formattedSortData.pageSize);
 
         const comments: WithId<CommentType>[] | null = await commentCollection

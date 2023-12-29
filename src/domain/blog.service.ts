@@ -3,14 +3,17 @@ import {BlogType, OutputItemsBlogType} from "../types/blogs/output";
 import {BlogRepository} from "../repositories/repositury/blog-repository";
 import {BlogQueryRepository} from "../repositories/query repository/blog-query-repository";
 import {PostToBlogCreateModel} from "../types/posts/input";
-import {PostType} from "../types/posts/output";
+import {OutputItemsPostType, PostType} from "../types/posts/output";
 import {PostRepository} from "../repositories/repositury/post-repository";
 
 
+// noinspection JSValidateJSDoc
 export class BlogService {
-
-    // Возвращает id созданного блога
-    static async addBlog(params: PostBlogReqBody): Promise<string> {
+    /**
+     * @param params - new blog data
+     * @returns {...newPost, id}
+     */
+    static async addBlog(params: PostBlogReqBody): Promise<OutputItemsBlogType> {
         const newBlog: BlogType = {
             createdAt: new Date().toISOString(),
             name: params.name,
@@ -19,11 +22,17 @@ export class BlogService {
             isMembership: false
 
         };
-        return await BlogRepository.addBlog(newBlog);
-    }
+       const newBlogId =  await BlogRepository.addBlog(newBlog);
+       return {...newBlog, id: newBlogId}
 
-    // Создаем пост в блоге = Возвращает id созданного поста
-    static async addPostToBlog(id: string, postData: PostToBlogCreateModel): Promise<string | null> {
+    }
+    /**
+     * @param id - blog id (string)
+     * @param postData
+     * @returns {...newPost, id}
+     * @return null - if blog do not exist
+     */
+    static async addPostToBlog(id: string, postData: PostToBlogCreateModel):  Promise<OutputItemsPostType | null> {
         const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(id);
         if (!blog) {
             return null
@@ -37,8 +46,9 @@ export class BlogService {
             blogName: blog.name,
             createdAt: new Date().toISOString()
         };
+        const newPostId = await PostRepository.addPost(newPost);
 
-        return await PostRepository.addPost(newPost)
+            return {...newPost, id: newPostId}
     }
 
     // Обновляем блог =  успех ✅true, не успех ❌false

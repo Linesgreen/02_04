@@ -1,19 +1,61 @@
-// noinspection UnnecessaryLocalVariableJS,SpellCheckingInspection
+// noinspection UnnecessaryLocalVariableJS,SpellCheckingInspection,ES6ShorthandObjectProperty
 
 import {UserCreateModel} from "../types/users/input";
 import bcrypt from "bcrypt";
-import {UserDBType} from "../types/users/output";
+import {UserDBType, UserOutputType} from "../types/users/output";
 import {v4 as uuidv4} from "uuid"
 import {add} from "date-fns";
-import {ObjectId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {UserRepository} from "../repositories/repositury/user-repository";
 
 import {EmailsManager} from "../managers/email-manager";
 import {expiredTokenDBType} from "../types/auth/token";
+import {ChekPass} from "../types/auth/input";
+import {UserService} from "./user.service";
+import {jwtService} from "../application/jwt-service";
+import {UserQueryRepository} from "../repositories/query repository/user-query-repository";
+import {AboutMe} from "../types/auth/output";
 
-export const authService = {
+export const AuthService = {
+    /**
+     * Auth flow
+     * @param loginData - {loginOremail, password}
+     * @returns {token, refreshToken}
+     * @return null - if user doesn't exist
+     */
+    async routLogin(loginData : ChekPass):Promise<{token: string, refreshToken: string} | null>{
+        const user: WithId<UserDBType> | null = await UserService.checkCredentials(loginData.loginOrEmail, loginData.password);
+        if (user) {
+            return AuthService.generateTokenPair(user._id)
+        }
+        return null
+        },
+    /**
+     * About me flow
+     * @param userId - string type
+     * @returns AboutMe - {email, login, userId}
+     */
+    async routAboutMe(userId : string): Promise<AboutMe> {
+        const user: UserOutputType | null = await UserQueryRepository.getUserById(userId);
+        const {email, login, id} = user!;
+        return {
+            email: email,
+            login: login,
+            userId: id
+        }
+    },
+    /**
+     * generate new pair tokens
+     * add old token to ban list
+     * @param userId - string type
+     * @param refrToken - old refresh token
+     * @returns {token, refreshToken}
+     */
+    async routeRefreshToken(userId : string, refrToken: string): Promise<{token: string, refreshToken: string} >{
+        await AuthService.refreshTokenToBanList(refrToken);
+        return AuthService.generateTokenPair(new ObjectId(userId))
+    },
     async createUser(userData: UserCreateModel): Promise<boolean> {
-        console.log('Сработала сучка:(');
         const passwordHash = await bcrypt.hash(userData.password, 12);
         const newUser: UserDBType = {
             _id: new ObjectId(),
@@ -70,5 +112,14 @@ export const authService = {
         }
         const result = await UserRepository.addTokenInBlackList(expiredToken)
         return result
+    },
+    /**
+     * @param userId - ObjectId type
+     * @returns AboutMe - {email, login, userId}
+     */
+    async  generateTokenPair(userId: ObjectId): Promise<{token: string, refreshToken: string}> {
+        const token = await jwtService.createJWT(userId);
+        const refreshToken = await jwtService.createRefreshJWT(userId);
+        return {token, refreshToken}
     }
 };

@@ -30,7 +30,7 @@ export class ConstructorFilter {
     }
 
 
-    static filter_Sort(sortBy: string, sortDirection: string | undefined): SortType {
+    static filter_Sort_for_Users(sortBy: string, sortDirection: string | undefined): SortType {
         if (sortDirection === 'asc') {
             return {
                 [`accountData.${sortBy}`]: 1
@@ -40,7 +40,7 @@ export class ConstructorFilter {
             [`accountData.${sortBy}`]: -1
         }
     }
-    static filter_Sort_forBlogs(sortBy: string, sortDirection: string | undefined): SortType {
+    static filter_Sort(sortBy: string, sortDirection: string | undefined): SortType {
         if (sortDirection === 'asc') {
             return {
                 [sortBy]: 1

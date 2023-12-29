@@ -8,7 +8,6 @@ import {usersRoute} from "./routes/users-route";
 import {commentRoute} from "./routes/comment-routes";
 import morganBody from 'morgan-body';
 import bodyParser from 'body-parser';
-import {emailRouter} from "./routes/email-router";
 import cookieParser from 'cookie-parser';
 export const app = express();
 
@@ -36,6 +35,5 @@ app.use(RouterPaths.index, indexRoute);
 app.use(RouterPaths.auth, authRoute);
 app.use(RouterPaths.users, usersRoute);
 app.use(RouterPaths.comments, commentRoute);
-app.use('/email', emailRouter);
 
 
