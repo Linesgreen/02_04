@@ -20,10 +20,17 @@ export class BlogService {
             description: params.description,
             websiteUrl: params.websiteUrl,
             isMembership: false
-
         };
-       const newBlogId =  await BlogRepository.addBlog(newBlog);
-       return {...newBlog, id: newBlogId}
+        console.log('---------------------')
+        console.log(newBlog)
+        console.log('---------------------')
+
+        const newBlogId =  await BlogRepository.addBlog(newBlog);
+        console.log('---------------------')
+        console.log(newBlog)
+        console.log('---------------------')
+        const asnwer =  {...newBlog, id: newBlogId}
+       return asnwer
 
     }
     /**
@@ -46,8 +53,13 @@ export class BlogService {
             blogName: blog.name,
             createdAt: new Date().toISOString()
         };
+        console.log('---------------------')
+        console.log(newPost)
+        console.log('---------------------')
         const newPostId = await PostRepository.addPost(newPost);
-
+        console.log('---------------------')
+        console.log(newPost)
+        console.log('---------------------')
             return {...newPost, id: newPostId}
     }
 

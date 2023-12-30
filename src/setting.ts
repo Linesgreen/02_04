@@ -23,7 +23,7 @@ export const RouterPaths = {
 };
 
 
-morganBody(app);
+//morganBody(app);
 
 
 app.use(bodyParser.json());
