@@ -6,7 +6,6 @@ import {PostToBlogCreateModel} from "../types/posts/input";
 import {OutputItemsPostType, PostType} from "../types/posts/output";
 import {PostRepository} from "../repositories/repositury/post-repository";
 
-
 // noinspection JSValidateJSDoc
 export class BlogService {
     /**
@@ -21,16 +20,9 @@ export class BlogService {
             websiteUrl: params.websiteUrl,
             isMembership: false
         };
-        console.log('---------------------')
-        console.log(newBlog)
-        console.log('---------------------')
 
-        const newBlogId =  await BlogRepository.addBlog(newBlog);
-        console.log('---------------------')
-        console.log(newBlog)
-        console.log('---------------------')
-        const asnwer =  {...newBlog, id: newBlogId}
-       return asnwer
+        const newBlogId =  await BlogRepository.addBlog({...newBlog});
+        return {...newBlog, id: newBlogId}
 
     }
     /**
@@ -53,14 +45,9 @@ export class BlogService {
             blogName: blog.name,
             createdAt: new Date().toISOString()
         };
-        console.log('---------------------')
-        console.log(newPost)
-        console.log('---------------------')
-        const newPostId = await PostRepository.addPost(newPost);
-        console.log('---------------------')
-        console.log(newPost)
-        console.log('---------------------')
-            return {...newPost, id: newPostId}
+
+        const newPostId = await PostRepository.addPost({...newPost});
+         return {...newPost, id: newPostId}
     }
 
     // Обновляем блог =  успех ✅true, не успех ❌false

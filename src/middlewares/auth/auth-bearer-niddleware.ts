@@ -13,7 +13,6 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
     }
     const [bearer, token] = auth.split(" ");
     if (bearer !== 'Bearer') {
-        console.log('Bearer не Bearer');
         return res.sendStatus(401);
     }
     const userId = await jwtService.getUserIdByToken(token);
@@ -30,10 +29,6 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
 };
 
 export const authRefreshBearerMiddleware = async (req: Request, res: Response, next: NextFunction)=> {
-    console.log('-----------------------------------------------')
-    console.log('Refresh token')
-    console.log(req.cookies.refreshToken)
-    console.log('-----------------------------------------------')
     if (!req.cookies.refreshToken){
 
         res.sendStatus(401)
@@ -47,7 +42,6 @@ export const authRefreshBearerMiddleware = async (req: Request, res: Response, n
     }
     const userId = await jwtService.getUserIdByToken(refreshToken);
     if (!userId) {
-        console.log('bebra')
         res.sendStatus(401);
         return;
     }

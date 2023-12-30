@@ -37,7 +37,6 @@ export const jwtService = {
             const result: any = jwt.verify(token, secretWord);
             return result.userId
         } catch (error) {
-            console.log(error)
             return null
         }
     },
