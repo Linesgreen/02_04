@@ -1,17 +1,19 @@
-import {PostType} from "../types/posts/output";
+import {OutputItemsPostType, PostType} from "../types/posts/output";
 import {PostCreateModel, PostUpdateModel} from "../types/posts/input";
 import {OutputItemsBlogType} from "../types/blogs/output";
 import {PostRepository} from "../repositories/repositury/post-repository";
 import {BlogQueryRepository} from "../repositories/query repository/blog-query-repository";
 import {CommentCreateModel} from "../types/comment/input";
-import {CommentType} from "../types/comment/output";
+import {CommentType, OutputItemsCommentType} from "../types/comment/output";
 import {CommentRepository} from "../repositories/repositury/comment-repository";
 
 import {PostQueryRepository} from "../repositories/query repository/post-query-repository";
+import {CommentMapper} from "../types/comment/commentMapper";
+import {ObjectId} from "mongodb";
 
 export class PostService {
     // Возвращает ID созданного поста
-    static async addPost(params: PostCreateModel): Promise<string> {
+    static async addPost(params: PostCreateModel): Promise<OutputItemsPostType> {
         const blog: OutputItemsBlogType | null = await BlogQueryRepository.getBlogById(params.blogId);
         const newPost: PostType = {
             /*id присваивает БД */
@@ -22,7 +24,8 @@ export class PostService {
             blogName: blog!.name,
             createdAt: new Date().toISOString()
         };
-        return await PostRepository.addPost(newPost)
+        const newPostId: string = await PostRepository.addPost({...newPost})
+        return {...newPost, id: newPostId}
     }
 
     //Возвращает ✅true (пост найден), ❌false (пост не найден)
@@ -42,11 +45,12 @@ export class PostService {
     }
 
     //Добавляем коментарий к посту
-    static async addCommentToPost(userInfo: { userId: string, userLogin: string }, postId: string, content: CommentCreateModel): Promise<string | null> {
+    static async addCommentToPost(userInfo: { userId: string, userLogin: string }, postId: string, content: CommentCreateModel): Promise<OutputItemsCommentType | null> {
         const post = await PostQueryRepository.getPostById(postId);
         if (!post) {
             return null
         }
+
         const newComment: CommentType = {
             postId: postId,
             content: content.content,
@@ -55,9 +59,10 @@ export class PostService {
                 userLogin: userInfo.userLogin
             },
             createdAt: new Date().toISOString()
-        };
 
-        return await CommentRepository.addComment(newComment)
+        };
+        const commentId = await CommentRepository.addComment({...newComment})
+        return CommentMapper({...newComment, _id:new ObjectId(commentId)})
     }
 }
 

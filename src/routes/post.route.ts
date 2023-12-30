@@ -1,7 +1,7 @@
 // noinspection MagicNumberJS,AnonymousFunctionJS
 
 import {Router, Response} from "express";
-import {OutputPostType, PostType} from "../types/posts/output";
+import {OutputItemsPostType, OutputPostType, PostType} from "../types/posts/output";
 import {
     RequestWithBody,
     RequestWithBodyAndParams,
@@ -23,7 +23,7 @@ import {CommentCreateModel, CommentsSortData} from "../types/comment/input";
 import {CommentQueryRepository} from "../repositories/query repository/comment-query-repository";
 import {mongoIdAndErrorResult} from "../middlewares/mongoIDValidation";
 import {authBearerMiddleware} from "../middlewares/auth/auth-bearer-niddleware";
-import {OutputItemsCommentType} from "../types/comment/output";
+import {OutputCommentType, OutputItemsCommentType} from "../types/comment/output";
 export const postRoute = Router({});
 
 
@@ -49,8 +49,8 @@ postRoute.get('/:id', mongoIdAndErrorResult(), async (req: RequestWithParams<Pos
 // Создаем пост
 postRoute.post('/', authMiddleware, postPostValidation(), async (req: RequestWithBody<PostCreateModel>, res: Response<PostType | null>) => {
     let {title, shortDescription, content, blogId}: PostCreateModel = req.body;
-    const newPostId: string = await PostService.addPost({title, shortDescription, content, blogId});
-    res.status(201).send(await PostQueryRepository.getPostById(newPostId))
+    const newPost: OutputItemsPostType = await PostService.addPost({title, shortDescription, content, blogId});
+    res.status(201).send(newPost);
 });
 
 // Обновляем пост
@@ -73,12 +73,8 @@ postRoute.post('/:id/comments', authBearerMiddleware, addCommentToPost(), async 
     const {id: userId, login: userLogin} = req.user!;
     const postId: string = req.params.id;
     const content: CommentCreateModel = req.body;
-    const newCommentId = await PostService.addCommentToPost({userId, userLogin}, postId, content);
-    if (newCommentId) {
-        res.status(201).send(await CommentQueryRepository.getCommentById(newCommentId))
-    } else {
-        res.sendStatus(404);
-    }
+    const newComment: OutputItemsCommentType | null = await PostService.addCommentToPost({userId, userLogin}, postId, content);
+    return newComment  ? res.status(201).send(newComment) : res.sendStatus(404);
 });
 // Получаем коментарии к посту
 postRoute.get('/:id/comments', mongoIdAndErrorResult(), async (req: RequestWithQueryAndParams<PostParams, CommentsSortData>, res: Response) => {
@@ -89,9 +85,8 @@ postRoute.get('/:id/comments', mongoIdAndErrorResult(), async (req: RequestWithQ
         pageSize: req.query.pageSize
     };
     const postId: string = req.params.id;
-    const comments = await CommentQueryRepository.getCommentsByPostId(postId, sortData);
+    const comments: OutputCommentType | null = await CommentQueryRepository.getCommentsByPostId(postId, sortData);
     return comments ? res.status(200).send(comments) : res.sendStatus(404)
-
 });
 
 

@@ -76,6 +76,7 @@ authRoute.post('/logout', authRefreshBearerMiddleware, async (req: Request, res:
     }
 
 });
+
 authRoute.post('/refresh-token', authRefreshBearerMiddleware, async (req: Request, res: Response) => {
     const userId = req.user!.id
     const refrToken: string = req.cookies.refreshToken

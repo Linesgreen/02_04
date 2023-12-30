@@ -36,7 +36,7 @@ usersRoute.post('/', authMiddleware, userPostValidation(), async (req: RequestWi
     };
     const newUserId: string = await UserService.addUser(userData);
     const newUser: UserOutputType | null = await UserQueryRepository.getUserById(newUserId);
-    res.status(201).send(newUser!);
+    return newUser ? res.status(201).send(newUser) : res.sendStatus(204)
 });
 
 usersRoute.delete('/:id', authMiddleware, mongoIdAndErrorResult(), async (req: RequestWithParams<PostParams>, res: Response) => {
